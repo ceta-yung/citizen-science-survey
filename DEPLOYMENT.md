@@ -1,6 +1,6 @@
 # GitHub Pages 部署準備
 
-目前尚未建立遠端儲存庫或上傳，待使用者提供 GitHub 帳號與儲存庫後執行。
+2026-09-10 已部署成功。網站：https://ceta-yung.github.io/citizen-science-survey/ 。公開儲存庫：https://github.com/ceta-yung/citizen-science-survey 。survey-media-v1 Release 已包含校驗值相符的 H.264 影片。
 
 ## 大型素材安排
 
@@ -11,7 +11,7 @@
 - Actions 在建置時下載該影片，核對 media.json 的 SHA256，與頁面一起部署。因此使用者播放的是 Pages 同來源檔案，而非直接跨來源播放 Release 連結；Canvas 可正常擷取。
 - 上線影片仍然較大，載入速度取決於使用者網路。preload=metadata 避免首頁就下載整段，Range 由 Pages 主機處理。公開後仍需實際檢查 Range、Canvas 及手機瀏覽器。
 
-## 待執行步驟
+## 後續重新部署步驟
 
 1. 確認指定的 GitHub 儲存庫、公開範圍與素材可發布，再提交原始碼及 crops；不提交個人指引、記憶或 mp4。
 2. 建立 `survey-media-v1` Release，資產名稱必須是 `survey_video.mp4`。

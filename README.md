@@ -1,6 +1,6 @@
 # 海上觀察室｜公民科學互動網頁
 
-最終目標為 GitHub Pages；目前先完成本機調整，尚未上傳。部署素材與流程見 DEPLOYMENT.md。
+GitHub Pages 已上線：https://ceta-yung.github.io/citizen-science-survey/ 。原始碼與影片 Release 位於 ceta-yung/citizen-science-survey；部署流程見 DEPLOYMENT.md。
 
 參考 `C:\Users\cetae\Desktop\Claude\互動網頁` 與 `project_interactive_survey_demo.md` 製作的本機新版。保留影片拍攝、照片篩選、目擊紀錄、個體目錄與成果報告。
 
