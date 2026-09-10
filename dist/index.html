@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>海上觀察室｜公民科學・鯨豚調查</title><meta name="description" content="從拍下一道背鰭開始，體驗鯨豚調查、照片篩選與個體辨識。"><meta name="theme-color" content="#102c36"><link rel="icon" href="icon.svg"><link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="base.css"><link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="appShell"><div id="pages">
+
+  <!-- ====== 開始頁 ====== -->
+  
+  <section class="page active" id="page-start">
+    <header class="start-masthead"><span class="wordmark">海上觀察室 <i>／</i> FIELD NOTES</span><span class="edition">公民科學・鯨豚調查</span></header>
+    <div class="start-image"><img src="cover.jpg" alt="海面上躍身的熱帶斑海豚"><span class="image-caption">觀察對象　熱帶斑海豚<br><i>Stenella attenuata</i></span></div>
+    <div class="start-copy"><span class="eyebrow">CETACEAN PHOTO-IDENTIFICATION</span><h1>下一次相遇，<br>認得出牠。</h1><p class="start-lead">每一道背鰭，都留下不同的線索。<br>跟著調查影片，試著記錄海上的這一刻。</p>
+    <ol class="journey"><li><span>01</span><div><strong>觀察與拍攝</strong><small>瞄準背鰭，留下清楚的照片</small></div></li><li><span>02</span><div><strong>整理目擊紀錄</strong><small>挑選照片，記下你的觀察</small></div></li><li><span>03</span><div><strong>翻閱個體目錄</strong><small>比較背鰭的形狀與缺刻</small></div></li></ol>
+    <button class="big-btn" id="btnStart">開始這次調查 <span aria-hidden="true">↗</span></button><p class="start-footnote">教學體驗 · 照片與紀錄僅留在本次頁面，重新整理即清除</p></div>
+    <footer class="start-footer"><span>觀察，從一張照片開始。</span><span>01 — 03 / PHOTO-ID</span></footer>
+  </section>
+
+  <!-- ====== 第一階段：拍攝 ====== -->
+  <section class="page" id="page-shoot">
+    <div id="videoWrap">
+      <!-- 依序嘗試：原檔換盒（HEVC 4K 120fps 10-bit，畫面與音訊逐位元無損）→ 不支援時自動退回 H.264 版 -->
+      <video id="surveyVideo" preload="metadata" muted playsinline poster="cover.jpg">
+        <source src="survey_video_hevc.mp4" type='video/mp4; codecs="hvc1.2.4.L153.90"'>
+        <source src="survey_video.mp4" type='video/mp4; codecs="avc1.640028"'>
+      </video>
+    </div>
+    <div id="shootTopbar"><span class="shoot-label">01 / 海上拍攝</span>
+      <div class="hint">移動瞄準 · 滾輪變焦 · 按住連拍</div>
+      <div class="right-tools">
+        <button class="tool-btn" id="btnSpeed"> 1.0×</button>
+        <button class="tool-btn" id="btnMute">開啟音訊</button>
+        <button class="tool-btn" id="btnEndShoot">結束拍攝 ➜</button>
+      </div>
+    </div>
+    <div id="captureControls"><button id="zoomOut" class="tool-btn" aria-label="縮小拍攝倍率">−</button><output id="zoomReadout">1.0×</output><button id="zoomIn" class="tool-btn" aria-label="放大拍攝倍率">＋</button><button id="shutterButton" aria-label="拍照，按住連拍"><span></span></button><button id="btnPause" class="tool-btn">暫停</button></div><p id="videoStatus" role="status"></p><div id="filmStrip"><span id="filmCount">0 張</span></div>
+    <div id="viewfinder">
+      <span class="vf-rec">● REC</span>
+      <span class="vf-zoom" id="vfZoom">1.0×</span>
+      <div class="vf-corner tl"></div><div class="vf-corner tr"></div>
+      <div class="vf-corner bl"></div><div class="vf-corner br"></div>
+      <div class="vf-cross"></div>
+      <span class="vf-count" id="vfCount">已拍 0 張</span>
+    </div>
+    <div id="shootEndOverlay">
+      <h2 id="endTitle">調查航次結束</h2>
+      <p id="endDesc"></p>
+      <div style="display:flex;gap:16px;">
+        <button class="tool-btn" id="btnReplay" style="font-size:16px;padding:12px 30px;">↺ 重新拍攝</button>
+        <button class="big-btn" id="btnToReview" style="font-size:16px;padding:12px 36px;">整理照片 ➜</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== 第二階段：篩選 + 紀錄表 ====== -->
+  <section class="page" id="page-review">
+    <div class="stage-header">
+      <span class="title">02 / 整理目擊紀錄</span>
+      <span class="desc">點照片選擇保留或刪除，再填寫本次紀錄</span>
+    </div>
+    <div class="review-left">
+      <h3>本次拍攝 <span id="reviewCount"></span></h3>
+      <div class="photo-grid" id="reviewGrid"></div>
+    </div>
+    <div class="review-right">
+      <div class="record-sheet" id="recordSheet">
+        <h2>鯨豚目擊紀錄表</h2>
+        <div class="sheet-sub">CETACEAN SIGHTING RECORD</div>
+        <div class="dz-label">已選照片 · 張數不限</div>
+        <div class="drop-zone" id="dropZone"></div>
+        <div class="form-row"><label>調查日期</label><input type="date" id="fDate"></div>
+        <div class="form-row"><label>紀錄者</label><input type="text" id="fRecorder" placeholder="請輸入姓名"></div>
+        <div class="form-row"><label>物種</label>
+          <select id="fSpecies">
+            <option value="">— 請選擇 —</option>
+            <option>花紋海豚 Grampus griseus</option>
+            <option>瓶鼻海豚 Tursiops truncatus</option>
+            <option>真海豚 Delphinus delphis</option>
+            <option>飛旋海豚 Stenella longirostris</option>
+            <option>熱帶斑海豚 Stenella attenuata</option>
+            <option>偽虎鯨 Pseudorca crassidens</option>
+            <option>虎鯨 Orcinus orca</option>
+            <option>其他 / 未確認</option>
+          </select>
+        </div>
+        <div class="form-row"><label>族群數量</label><input type="number" id="fCount" min="1" step="1" placeholder="估計隻數"></div>
+        <div class="form-row"><label>行為</label>
+          <div class="behavior-opts" id="fBehavior">
+            <label><input type="checkbox" value="遊走">遊走</label>
+            <label><input type="checkbox" value="覓食">覓食</label>
+            <label><input type="checkbox" value="社交">社交</label>
+            <label><input type="checkbox" value="休息">休息</label>
+            <label><input type="checkbox" value="船艏乘浪">船艏乘浪</label>
+            <label><input type="checkbox" value="躍身擊浪">躍身擊浪</label>
+          </div>
+        </div>
+        <div class="sheet-actions"><button class="confirm-btn" id="btnConfirmRecord">前往個體比對 →</button></div>
+        <div class="form-err" id="formErr"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== 第三階段：個體比對 ====== -->
+  <section class="page" id="page-match">
+    <div class="stage-header">
+      <span class="title">03 / 比對背鰭線索</span>
+      <span class="desc">先選照片，再點目錄放大比較；可用 ＋ / − 或雙指縮放</span>
+    </div>
+    <div class="match-left">
+      <h3>我的照片</h3>
+      <div class="my-photo-list" id="myPhotoList"></div>
+    </div>
+    <div class="my-viewer">
+      <div class="viewer-head">
+        <span id="viewerTitle">尚未選擇照片</span>
+        <span class="zoom-ind" id="myZoomInd"></span>
+      </div>
+      <div class="zoom-box" id="myViewerBox">
+        <div class="zoom-stage"><img id="myViewerImg" alt="" style="display:none"></div>
+        <div class="viewer-empty" id="viewerEmpty">← 點選左側照片<br>滾輪放大縮小 · 拖曳平移</div>
+      </div>
+    </div>
+    <div class="pair-col">
+      <button class="pair-btn" id="btnPair" disabled>相同<br>個體</button>
+      <div class="pair-hint" id="pairHint"></div>
+    </div>
+    <div class="book-col">
+      <p class="catalog-note">教學目錄：與影片物種不同，配對僅供流程練習。</p><div class="book-half">
+        <div class="bh-page" id="bhPage"></div>
+        <div class="bh-zoom" id="bhZoom" style="display:none">
+          <div class="bz-head">
+            <button class="bz-back" id="bzBack">‹ 返回目錄</button>
+            <span id="bzTag"></span>
+            <span class="zoom-ind" id="bzZoomInd"></span>
+          </div>
+          <div class="zoom-box" id="bzBox">
+            <div class="zoom-stage"><img id="bzImg" alt=""></div>
+          </div>
+          <div class="bz-nav"><button id="bzPrev">‹ 上一張</button><button id="bzNext">下一張 ›</button></div>
+        </div>
+        <div class="bh-seam"></div>
+      </div>
+      <div class="book-footer">
+        <div class="bf-nav">
+          <button class="book-nav" id="btnPrevInd">‹</button>
+          <div class="page-dots" id="pageDots"></div>
+          <button class="book-nav" id="btnNextInd">›</button>
+        </div>
+        <span class="page-indicator" id="pageIndicator"></span>
+        <button class="big-btn" id="btnFinishMatch" style="font-size:14px;padding:9px 28px;letter-spacing:3px;">完成比對 ✓</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== 結果頁 ====== -->
+  <section class="page" id="page-result">
+    <h1>這次的海上觀察</h1><p class="result-note">教學練習紀錄 · 配對由操作者判讀，並非經驗證的科學辨識結果。</p>
+    <div class="fin">SURVEY REPORT</div>
+    <div class="result-card">
+      <h3>目擊紀錄</h3>
+      <table class="summary-table" id="resultSummary"></table>
+    </div>
+    <div class="result-card">
+      <h3>個體比對練習</h3>
+      <div id="resultMatches"></div>
+    </div>
+    <div class="restart-row"><button class="tool-btn" id="btnPrint">列印 / 儲存報告</button><button class="big-btn" id="btnRestart">再跑一次航次 ↺</button></div>
+  </section>
+
+</div>
+
+<!-- ====== 照片放大篩選視窗（第二階段用） ====== -->
+<div id="lightbox" role="dialog" aria-modal="true" aria-label="照片篩選">
+  <button id="lbClose" aria-label="關閉照片檢視">✕</button>
+  <div class="lb-inner">
+    <div class="lb-pane lb-right">
+      <div class="lb-title"><span id="lbDbTitle">照片篩選</span><span class="tag" id="lbDbTag"></span></div>
+      <div class="lb-imgwrap" id="lbDbWrap">
+        <span class="lb-zoombadge" id="lbZoomBadge"></span>
+        <button class="lb-arrow l" id="lbDbPrev">‹</button>
+        <img id="lbDbImg" alt="">
+        <button class="lb-arrow r" id="lbDbNext">›</button>
+      </div>
+      <div class="lb-actions" id="lbActions">
+        <button class="act-del" id="lbDel" title="快捷鍵 Del"> 刪除</button>
+        <button class="act-keep" id="lbKeep" title="快捷鍵 Enter">✓ 保留</button>
+      </div>
+      <div class="lb-keyhint"> <b>Del</b> 刪除　<b>Enter</b> 保留　<b>← →</b> 換張　<b>Esc</b> 關閉<br>已決定的照片會自動退出待審循環</div>
+    </div>
+  </div>
+</div>
+
+<div id="displayTools"><button id="fullscreenButton" aria-label="切換全螢幕">全螢幕</button><button id="exitImmersive" hidden aria-label="關閉橫向沉浸模式">✕ 關閉</button></div>
+    <div id="mobilePrompt" role="dialog" aria-modal="true" aria-labelledby="mobileTitle" hidden><div class="mobile-card"><button id="dismissMobile" aria-label="關閉橫向提示">✕</button><span class="eyebrow">手機操作</span><h2 id="mobileTitle">把海面，轉寬一點。</h2><p>橫向可以看見更完整的畫面。開始後會嘗試全螢幕；若手機不支援，也能使用橫向操作畫面。</p><button id="enterMobile" class="big-btn">進入橫向體驗</button><button id="stayPortrait" class="text-button">先使用直向畫面</button></div></div>
+    <div id="notice" role="status" aria-live="polite"></div></div><script src="catalog.js"></script><script src="app.js"></script><script src="experience.js"></script>
+</body>
+</html>

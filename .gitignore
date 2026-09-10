@@ -1,0 +1,15 @@
+dist/*.mp4
+dist/*.MOV
+.pages/
+node_modules/
+*.log
+.env*
+!.env.example
+.DS_Store
+Thumbs.db
+# 個人指引與進度不隨公開網站上傳。
+AGENTS.md
+MEMORY.md
+memory/
+
+mobile-test/
