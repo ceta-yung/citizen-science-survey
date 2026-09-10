@@ -3,6 +3,37 @@ const mobileDevice = matchMedia('(pointer:coarse)').matches || navigator.maxTouc
 let immersive = false;
 let fullscreenWasActive = false;
 let noticeTimer;
+const appleTouchDevice = /iPhone|iPad|iPod/.test(navigator.userAgent) ||
+  (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+let scrollStage = null;
+let lastLayout = null;
+let layoutFrame = 0;
+
+function needsDocumentScroll(){
+  return appleTouchDevice && !document.fullscreenElement &&
+    !navigator.standalone && !matchMedia('(display-mode: standalone)').matches;
+}
+function updateDocumentScroll(height){
+  const enabled = needsDocumentScroll();
+  if(enabled && !scrollStage){
+    scrollStage = document.createElement('div');
+    scrollStage.id = 'iosScrollStage';
+    shell.before(scrollStage);
+    scrollStage.appendChild(shell);
+  }
+  document.documentElement.classList.toggle('ios-document-scroll', enabled);
+  if(scrollStage)scrollStage.style.setProperty('--visible-height', height+'px');
+}
+function scheduleLayout(){
+  if(layoutFrame)return;
+  layoutFrame = requestAnimationFrame(()=>{
+    layoutFrame = 0;
+    // 不把鍵盤或使用者頁面縮放誤判為方向改變。
+    if(window.visualViewport?.scale > 1.01)return;
+    if(document.activeElement?.matches('input,textarea,select'))return;
+    layoutExperience();
+  });
+}
 
 function tell(message){
   $('notice').textContent=message;
@@ -25,8 +56,8 @@ function aimAt(x,y){
   vf.style.left=mouseX+'px';vf.style.top=mouseY+'px';
 }
 function layoutExperience(){
-  stopBurst();
   const width=document.documentElement.clientWidth,height=window.innerHeight;
+  updateDocumentScroll(height);
   const rotate=immersive && mobileDevice && height>width;
   shell.classList.toggle('virtual-landscape',rotate);
   shell.style.setProperty('--landscape-width',height+'px');
@@ -35,7 +66,15 @@ function layoutExperience(){
   shell.classList.toggle('compact',w>h && h<620);
   $('exitImmersive').hidden=!immersive;
   $('fullscreenButton').hidden=immersive;
-  aimAt(w/2,h/2);applyZoom();
+  // Safari 工具列收合會改變高度；沿用相對瞄準位置，避免跳回正中央。
+  if(!lastLayout || lastLayout.w!==w || lastLayout.h!==h || lastLayout.rotate!==rotate){
+    stopBurst();
+    const x = lastLayout ? mouseX/lastLayout.w*w : w/2;
+    const y = lastLayout ? mouseY/lastLayout.h*h : h/2;
+    if(lastLayout){panX*=w/lastLayout.w;panY*=h/lastLayout.h;}
+    aimAt(x,y);applyZoom();
+    lastLayout={w,h,rotate};
+  }
 }
 
 async function enterImmersive(){
@@ -67,15 +106,17 @@ document.addEventListener('fullscreenchange',()=>{
   if(fullscreenWasActive && !active){immersive=false;try{screen.orientation?.unlock?.();}catch{}}
   fullscreenWasActive=active;layoutExperience();
 });
-window.addEventListener('resize',layoutExperience);
-screen.orientation?.addEventListener('change',layoutExperience);
+window.addEventListener('resize',scheduleLayout);
+window.visualViewport?.addEventListener('resize',scheduleLayout);
+screen.orientation?.addEventListener('change',scheduleLayout);
+document.addEventListener('focusout',scheduleLayout);
 window.addEventListener('blur',stopBurst);
 document.addEventListener('visibilitychange',()=>{if(document.hidden){stopBurst();video.pause();}});
 
 $('btnStart').onclick=()=>{
   // 在手勢當下啟動播放，避免轉場計時器讓 iOS 丟失播放授權。
   video.play().catch(()=>{$('videoStatus').textContent='點「播放」開始觀察。';});
-  flipTo('page-shoot',()=>{layoutExperience();});
+  flipTo('page-shoot',()=>{lastLayout=null;layoutExperience();});
 };
 function changeZoom(f,x=mouseX,y=mouseY){
   const nz=Math.min(ZOOM_MAX,Math.max(ZOOM_MIN,zoom*f));

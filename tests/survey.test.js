@@ -85,3 +85,27 @@ test('手機全螢幕遭平台拒絕時保留替代布局，關閉後還原',asy
   await context.enterImmersive();assert.equal(context.immersive,true);assert.equal(prompt.hidden,true);assert.equal(notices,1);assert.ok(layouts>=2);
   await context.exitImmersive();assert.equal(context.immersive,false);assert.equal(unlocks,1);assert.equal(focused,true);
 });
+
+test('整頁捲動僅用於Apple瀏覽器，原生全螢幕與主畫面App不啟用',()=>{
+  const code=experience.slice(experience.indexOf('function needsDocumentScroll('),experience.indexOf('function updateDocumentScroll('));
+  const context={appleTouchDevice:true,document:{fullscreenElement:null},navigator:{standalone:false},matchMedia:()=>({matches:false})};
+  vm.createContext(context);vm.runInContext(code,context);
+  assert.equal(context.needsDocumentScroll(),true);
+  context.document.fullscreenElement={};assert.equal(context.needsDocumentScroll(),false);
+  context.document.fullscreenElement=null;context.navigator.standalone=true;assert.equal(context.needsDocumentScroll(),false);
+  context.navigator.standalone=false;context.appleTouchDevice=false;assert.equal(context.needsDocumentScroll(),false);
+});
+
+test('網址列收合後維持相對瞄準位置，重複同尺寸事件不重設拍攝',()=>{
+  const code=experience.slice(experience.indexOf('function layoutExperience('),experience.indexOf('async function enterImmersive('));
+  let stops=0;
+  const context={document:{documentElement:{clientWidth:390}},window:{innerHeight:650},immersive:true,mobileDevice:true,lastLayout:null,
+    shell:{classList:{toggle(){}},style:{setProperty(){}}},updateDocumentScroll(){},$:()=>({hidden:false}),
+    mouseX:0,mouseY:0,panX:0,panY:0,stopBurst(){stops++;},applyZoom(){},aimAt(x,y){context.mouseX=x;context.mouseY=y;}};
+  vm.createContext(context);vm.runInContext(code,context);
+  context.layoutExperience();assert.equal(context.mouseX,325);assert.equal(context.mouseY,195);
+  context.mouseX=130;context.mouseY=100;context.panX=-65;
+  context.window.innerHeight=750;context.layoutExperience();
+  assert.ok(Math.abs(context.mouseX-150)<1e-8);assert.ok(Math.abs(context.mouseY-100)<1e-8);assert.ok(Math.abs(context.panX+75)<1e-8);
+  context.layoutExperience();assert.equal(stops,2);
+});
