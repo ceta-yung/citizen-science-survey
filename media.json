@@ -1,1 +1,39 @@
-{"file":"survey_video.mp4","releaseTag":"survey-media-v1","bytes":296217796,"sha256":"f84d28116c60bb65c2a2239d61841db5763883068df87c480319407df05bc404","localOriginal":{"file":"survey_video_hevc.mp4","bytes":1433986600,"sha256":"ce21f22ff0ab0267bc6382cc47f1a811edf1c84f0ccf08bbaecf4baabef4a9d4"}}
+{
+  "releaseTag": "survey-media-v2",
+  "encoding": "H.264 CRF 20, original resolution and frame rate, AAC 160k, faststart",
+  "videos": [
+    {
+      "file": "videos/265A7010.mp4",
+      "bytes": 207834614,
+      "sha256": "01735136a8cdc9c0abd36147fed6b55ce615b2a6829ab5bbac596df5ccfaf578",
+      "width": 3840,
+      "height": 2160,
+      "r_frame_rate": "60000/1001",
+      "nb_frames": "956",
+      "duration": 15.949267,
+      "sourceSha256": "9fccc481418996deaffe9da7561df0dbfd6600b748d126deef27919a30d6ab89"
+    },
+    {
+      "file": "videos/265A7914.mp4",
+      "bytes": 187561675,
+      "sha256": "f38bddc7ffa1e1f04f8cd90764dfc89967977a74aa21f69b8eb135f4dd8663c4",
+      "width": 3840,
+      "height": 2160,
+      "r_frame_rate": "60000/1001",
+      "nb_frames": "684",
+      "duration": 11.4114,
+      "sourceSha256": "ed59c6bbd26208f11cb55bd6988bd2d27c0eec3e5d38f6c240b132ff20a01fed"
+    },
+    {
+      "file": "videos/266A0862.mp4",
+      "bytes": 324271961,
+      "sha256": "e6e607e04915cb2747c22b76ecced96e76fd8a96104ef87afb5f44a6f7318d2c",
+      "width": 3840,
+      "height": 2160,
+      "r_frame_rate": "60000/1001",
+      "nb_frames": "1254",
+      "duration": 20.9209,
+      "sourceSha256": "b5f01308e8cea9f78a706b621ca46f2d6cd0c019768b90d2651a58dfff8b86e6"
+    }
+  ]
+}

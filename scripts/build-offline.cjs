@@ -12,7 +12,7 @@ const catalogSource=read('catalog.js');
 const catalog=vm.runInNewContext(catalogSource+';SURVEY_INDIVIDUALS',{});
 const assets={};
 for(const [id,files] of Object.entries(catalog))for(const file of files)assets[id+'/'+file]=data(path.join('crops',id,file),'image/jpeg');
-let html=read('index.html');
+let html=read('index.html').replace('<script src="videos.js"></script>','');
 html=html.replace('<title>海上觀察室｜公民科學・鯨豚調查</title>','<title>海上觀察室｜手機離線測試版</title>');
 html=html.replace(/<link rel="manifest"[^>]+>/,'');
 html=html.replace('href="icon.svg"',`href="${data('icon.svg','image/svg+xml')}"`);
@@ -23,7 +23,7 @@ html=html.replace('教學體驗 · 照片與紀錄僅留在本次頁面，重新
 html=html.replace('公民科學・鯨豚調查</span>','手機離線測試版</span>');
 html=html.replace('<body>','<body><noscript><div style="position:fixed;inset:0;z-index:9999;background:#fff;padding:30px;color:#15323b">此檔案需要執行 JavaScript。請使用支援本機 HTML 的瀏覽器開啟，不要使用檔案或通訊軟體的預覽模式。</div></noscript>');
 let app=read('app.js').replace('const dbSrc = (ind, file) => "crops/" + ind + "/" + encodeURIComponent(file);','const dbSrc = (ind, file) => OFFLINE_PHOTOS[ind + "/" + file];');
-let experience=read('experience.js').replace("video.src='survey_video.mp4'","video.src=window.offlineVideoURL");
+let experience=read('experience.js').replace('video.src=selectSurveyVideo()','video.src=window.offlineVideoURL');
 const videoBase64=fs.readFileSync(videoPath).toString('base64');
 const boot=`
 const OFFLINE_PHOTOS=${JSON.stringify(assets)};
@@ -57,7 +57,7 @@ for(const source of [boot,catalogSource,app,experience,guard])new vm.Script(sour
 const markup=html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,'');
 const links=[...markup.matchAll(/\b(?:src|href|poster)="([^"]+)"/g)].map(x=>x[1]);
 for(const url of links)if(!url.startsWith('data:')&&!url.startsWith('#'))throw new Error('仍有外部資產：'+url);
-if(Object.keys(assets).length!==28)throw new Error('個體圖片數量不符');
+if(Object.keys(assets).length!==34)throw new Error('個體圖片數量不符');
 if(!Buffer.from(videoBase64,'base64').equals(fs.readFileSync(videoPath)))throw new Error('影片內嵌資料不符');
 fs.mkdirSync(path.dirname(output),{recursive:true});fs.writeFileSync(output,html);
 console.log(JSON.stringify({file:output,sizeMiB:+(fs.statSync(output).size/1048576).toFixed(1),photos:Object.keys(assets).length,scripts:'syntax passed',externalAssets:0}));

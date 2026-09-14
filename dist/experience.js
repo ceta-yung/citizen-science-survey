@@ -115,6 +115,8 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden){stopBurst(
 
 $('btnStart').onclick=()=>{
   // 在手勢當下啟動播放，避免轉場計時器讓 iOS 丟失播放授權。
+  video.src=selectSurveyVideo();
+  video.load();
   video.play().catch(()=>{$('videoStatus').textContent='點「播放」開始觀察。';});
   flipTo('page-shoot',()=>{lastLayout=null;layoutExperience();});
 };
@@ -134,13 +136,9 @@ video.addEventListener('waiting',()=>{$('videoStatus').textContent='影片緩衝
 video.addEventListener('loadstart',()=>{$('videoStatus').textContent='正在載入調查影片…';});
 video.addEventListener('canplay',()=>{$('videoStatus').textContent='';updatePlayback();});
 video.addEventListener('playing',()=>{$('videoStatus').textContent='';});
-let compatibleSource=false;
 video.addEventListener('error',()=>{
   stopBurst();
-  if(!compatibleSource){
-    compatibleSource=true;video.src='survey_video.mp4';video.load();
-    $('videoStatus').textContent='正在改用相容格式，載入後按播放。';
-  }else{$('videoStatus').textContent='影片無法載入。請確認伺服器與影片檔案，重新整理後再試。';}
+  $('videoStatus').textContent='影片無法載入，請確認連線後重新整理再試。';
 });
 
 function startBurst(){

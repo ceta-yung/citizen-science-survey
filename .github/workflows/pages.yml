@@ -21,11 +21,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Download original H.264 media from release
+      - name: Download survey videos from release
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
-        run: gh release download survey-media-v1 --pattern survey_video.mp4 --dir dist
+        run: gh release download survey-media-v2 --pattern '*.mp4' --dir dist/videos
       - name: Check syntax and build static site
         run: |
           npm run check
