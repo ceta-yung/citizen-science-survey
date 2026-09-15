@@ -12,12 +12,12 @@ async function hash(file){const h=crypto.createHash('sha256');for await(const ch
  if(originals.length!==3)throw Error('必須恰好三部來源影片');
  const videos=[];
  for(const original of originals.sort()){
-  const file='videos/'+path.basename(original,path.extname(original))+'.mp4';
+  const file='videos/'+path.basename(original,path.extname(original))+'-1080p.mp4';
   const output=path.join(root,'dist',file),a=probe(original),b=probe(output);
-  for(const field of ['width','height','r_frame_rate','nb_frames'])if(a.streams[0][field]!==b.streams[0][field])throw Error(file+' '+field+' 與來源不符');
+  if(b.streams[0].width!==1920||b.streams[0].height!==1080||b.streams[0].r_frame_rate!=='30/1')throw Error(file+' 必須為1080p 30fps');
   if(Math.abs(Number(a.format.duration)-Number(b.format.duration))>.1)throw Error(file+' 片長不符');
   videos.push({file,bytes:fs.statSync(output).size,sha256:await hash(output),...b.streams[0],duration:Number(b.format.duration),sourceSha256:await hash(original)});
  }
- fs.writeFileSync(path.join(root,'media.json'),JSON.stringify({releaseTag:'survey-media-v2',encoding:'H.264 CRF 20, original resolution and frame rate, AAC 160k, faststart',videos},null,2)+'\n');
- console.log(JSON.stringify({videos:videos.length,bytes:videos.reduce((n,v)=>n+v.bytes,0),verified:'resolution, frame rate, frame count, duration, SHA256'}));
+ fs.writeFileSync(path.join(root,'media.json'),JSON.stringify({releaseTag:'survey-media-v3',encoding:'H.264 1080p 30fps CRF22 maxrate 6M, AAC 128k, faststart',videos},null,2)+'\n');
+ console.log(JSON.stringify({videos:videos.length,bytes:videos.reduce((n,v)=>n+v.bytes,0),verified:'1080p, 30fps, duration, SHA256'}));
 })().catch(e=>{console.error(e);process.exitCode=1;});

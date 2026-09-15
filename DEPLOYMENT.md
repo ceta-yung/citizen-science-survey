@@ -2,7 +2,7 @@
 
 目標：ceta-yung/citizen-science-survey；網站 https://ceta-yung.github.io/citizen-science-survey/
 
-1. 將 media.json 所列三部 MP4 上傳至 survey-media-v2 Release。
+1. 將 media.json 所列三部 MP4 上傳至 survey-media-v3 Release。
 2. 執行 npm test、npm run check、npm run build:pages。建置校驗所有影片 SHA256，網站總容量須小於 1 GB。
 3. 推送 main，將儲存庫設為 Public，Pages 選擇 GitHub Actions。
 4. 手動執行 Publish GitHub Pages workflow。影片會下載至 dist/videos，並與網站一起部署，維持同來源播放及 Canvas 拍攝。

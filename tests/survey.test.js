@@ -20,10 +20,10 @@ test('HTTP：首頁、中文目錄照片、影片部分讀取與非公開檔案�
   const base=`http://127.0.0.1:${server.address().port}`;
   try{
     const home=await fetch(base);assert.equal(home.status,200);assert.match(await home.text(),/海上觀察室/);
-    const response=await fetch(base+'/videos/265A7010.mp4',{headers:{Range:'bytes=1000-1099'}});
+    const response=await fetch(base+'/videos/265A7010-1080p.mp4',{headers:{Range:'bytes=1000-1099'}});
     assert.equal(response.status,206);const actual=Buffer.from(await response.arrayBuffer());assert.equal(actual.length,100);
-    const file=fs.openSync(path.join(root,'videos/265A7010.mp4'),'r'),expected=Buffer.alloc(100);fs.readSync(file,expected,0,100,1000);fs.closeSync(file);assert.deepEqual(actual,expected);
-    const bad=await fetch(base+'/videos/265A7010.mp4',{headers:{Range:'bytes=999999999999-'}});assert.equal(bad.status,416);
+    const file=fs.openSync(path.join(root,'videos/265A7010-1080p.mp4'),'r'),expected=Buffer.alloc(100);fs.readSync(file,expected,0,100,1000);fs.closeSync(file);assert.deepEqual(actual,expected);
+    const bad=await fetch(base+'/videos/265A7010-1080p.mp4',{headers:{Range:'bytes=999999999999-'}});assert.equal(bad.status,416);
     for(const url of ['/server.js','/MEMORY.md','/%2e%2e%2fserver.js'])assert.ok([403,404].includes((await fetch(base+url)).status));
     const database=vm.runInNewContext(fs.readFileSync(path.join(root,'catalog.js'),'utf8')+';SURVEY_INDIVIDUALS',{});
     let count=0;
