@@ -114,9 +114,15 @@ window.addEventListener('blur',stopBurst);
 document.addEventListener('visibilitychange',()=>{if(document.hidden){stopBurst();video.pause();}});
 
 let downloadController=null,preparedVideoURL=null,selectedVideo=null;
-function beginPreparedSurvey(){
-  video.play().catch(()=>{$('videoStatus').textContent='點「播放」開始觀察。';});
-  flipTo('page-shoot',()=>{lastLayout=null;layoutExperience();});
+async function beginPreparedSurvey(){
+  try{
+    await video.play();
+    $('downloadPanel').hidden=true;
+    flipTo('page-shoot',()=>{lastLayout=null;layoutExperience();});
+  }catch{
+    $('downloadStatus').textContent='影片已就緒，點一下開始播放。';
+    $('downloadAction').hidden=false;
+  }
 }
 $('btnStart').onclick=async()=>{
   if(preparedVideoURL){beginPreparedSurvey();return;}
@@ -125,7 +131,7 @@ $('btnStart').onclick=async()=>{
   selectedVideo ||= selectSurveyVideo();
   const button=$('btnStart'),panel=$('downloadPanel'),bar=$('downloadProgress');
   button.disabled=true;button.textContent='正在準備影片…';panel.hidden=false;
-  $('cancelDownload').hidden=false;bar.removeAttribute('value');
+  $('cancelDownload').hidden=false;$('downloadAction').hidden=true;bar.removeAttribute('value');
   $('downloadStatus').textContent='正在連線，完整下載後即可開始拍攝。';
   try{
     const blob=await downloadSurveyVideo(selectedVideo,controller.signal,(loaded,total)=>{
@@ -137,13 +143,14 @@ $('btnStart').onclick=async()=>{
     if(controller.signal.aborted)return;
     preparedVideoURL=URL.createObjectURL(blob);video.src=preparedVideoURL;video.load();
     bar.value=100;$('downloadStatus').textContent='影片已完整下載，準備好就出發。';
-    button.textContent='影片已就緒，開始拍攝 ↗';$('cancelDownload').hidden=true;
-    // 再次點擊保留iPhone播放所需的使用者手勢。
+    button.textContent='開始這次調查 ↗';$('cancelDownload').hidden=true;
+    await beginPreparedSurvey();
   }catch(error){
     if(error.name==='AbortError'){panel.hidden=true;button.textContent='開始這次調查 ↗';selectedVideo=null;}
-    else{$('downloadStatus').textContent='下載未完成，請確認網路後重試。';button.textContent='重新下載影片 ↗';$('cancelDownload').hidden=true;}
+    else{$('downloadStatus').textContent='下載未完成，請確認網路後重試。';button.textContent='重新下載影片 ↗';$('cancelDownload').hidden=true;$('downloadAction').textContent='重新下載 ↗';$('downloadAction').hidden=false;}
   }finally{downloadController=null;button.disabled=false;}
 };
+$('downloadAction').onclick=()=>{if(preparedVideoURL)beginPreparedSurvey();else $('btnStart').click();};
 $('cancelDownload').onclick=()=>downloadController?.abort();
 window.addEventListener('pagehide',event=>{
   downloadController?.abort();
