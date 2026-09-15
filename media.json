@@ -1,38 +1,38 @@
 {
-  "releaseTag": "survey-media-v3",
-  "encoding": "H.264 1080p 30fps CRF22 maxrate 6M, AAC 128k, faststart",
+  "releaseTag": "survey-media-v4",
+  "encoding": "H.264 4K 30fps CRF20, AAC 128k, faststart",
   "videos": [
     {
-      "file": "videos/265A7010-1080p.mp4",
-      "bytes": 12753688,
-      "sha256": "c29a2188d40dc6e149d235d6e20fdf4b744354e058cdf8c6a889892d458839e8",
-      "width": 1920,
-      "height": 1080,
+      "file": "videos/265A7010-4k30.mp4",
+      "bytes": 162007437,
+      "sha256": "d048d171cd763c9d569db2f8db3e342a18102f14348c1d4d39a4d9080d6b6ef5",
+      "width": 3840,
+      "height": 2160,
       "r_frame_rate": "30/1",
       "nb_frames": "478",
       "duration": 15.936,
       "sourceSha256": "9fccc481418996deaffe9da7561df0dbfd6600b748d126deef27919a30d6ab89"
     },
     {
-      "file": "videos/265A7914-1080p.mp4",
-      "bytes": 9344811,
-      "sha256": "c67f85097bddc32e15d18aa6da80ba762a5e9518add2bc0f99bc5b96983d723d",
-      "width": 1920,
-      "height": 1080,
+      "file": "videos/265A7914-4k30.mp4",
+      "bytes": 143530227,
+      "sha256": "bc823f395c3c4f8e0b851c6586b22ffaeb4a6cc110ede6251a449f2ca8c6df0b",
+      "width": 3840,
+      "height": 2160,
       "r_frame_rate": "30/1",
       "nb_frames": "342",
       "duration": 11.4,
       "sourceSha256": "ed59c6bbd26208f11cb55bd6988bd2d27c0eec3e5d38f6c240b132ff20a01fed"
     },
     {
-      "file": "videos/266A0862-1080p.mp4",
-      "bytes": 16584781,
-      "sha256": "4dc431e13644203a78caee0efee14a6fbadc2eeba4af209013f433dec6b72298",
-      "width": 1920,
-      "height": 1080,
+      "file": "videos/266A0862-4k30.mp4",
+      "bytes": 239358619,
+      "sha256": "b8062edcc13828a14559b4350d3ea279f7e3917741749255f54ad0f61f02b377",
+      "width": 3840,
+      "height": 2160,
       "r_frame_rate": "30/1",
-      "nb_frames": "627",
-      "duration": 20.906,
+      "nb_frames": "628",
+      "duration": 20.933333,
       "sourceSha256": "b5f01308e8cea9f78a706b621ca46f2d6cd0c019768b90d2651a58dfff8b86e6"
     }
   ]

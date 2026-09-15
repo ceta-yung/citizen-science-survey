@@ -30,7 +30,7 @@ GitHub Pages 已上線：https://ceta-yung.github.io/citizen-science-survey/ 。
 
 ## 素材與科學解讀
 
-調查影片位於 `dist/videos`，由指定三部飛旋海豚素材製作 H.264 網頁版，使用1080p、30fps，保留完整片長與音訊，最高影片位元率6 Mbps。每次開始調查獨立隨機選片；重播沿用同片，重新開始會重新抽選。影片從 `survey-media-v3` Release 下載，SHA256 記錄於 media.json。
+調查影片位於 `dist/videos`，由指定三部飛旋海豚素材製作 H.264 網頁版，使用4K、30fps與CRF20品質編碼，保留完整片長與音訊。每次開始調查獨立隨機選片；重播沿用同片，重新開始會重新抽選。影片從 `survey-media-v4` Release 下載，SHA256 記錄於 media.json。
 
 `crops` 共 6 個目錄、34 張照片，包含 NISL_0076。比對僅為教學練習，不能作為已確認個體辨識結果。
 
