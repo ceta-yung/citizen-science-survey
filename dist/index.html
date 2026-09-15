@@ -17,7 +17,7 @@
     <div class="start-image"><img src="cover.jpg" alt="海上鯨豚觀察示意"><span class="image-caption">本次調查　長吻飛旋海豚<br><i>Stenella longirostris</i></span></div>
     <div class="start-copy"><span class="eyebrow">CETACEAN PHOTO-IDENTIFICATION</span><h1>下一次相遇，<br>認得出牠。</h1><p class="start-lead">每一道背鰭，都留下不同的線索。<br>跟著調查影片，試著記錄海上的這一刻。</p>
     <ol class="journey"><li><span>01</span><div><strong>觀察與拍攝</strong><small>瞄準背鰭，留下清楚的照片</small></div></li><li><span>02</span><div><strong>整理目擊紀錄</strong><small>挑選照片，記下你的觀察</small></div></li><li><span>03</span><div><strong>翻閱個體目錄</strong><small>比較背鰭的形狀與缺刻</small></div></li></ol>
-    <button class="big-btn" id="btnStart">開始這次調查 <span aria-hidden="true">↗</span></button><p class="start-footnote">教學體驗 · 照片與紀錄僅留在本次頁面，重新整理即清除</p></div>
+    <button class="big-btn" id="btnStart">開始這次調查 <span aria-hidden="true">↗</span></button><div id="downloadPanel" hidden><p id="downloadStatus" role="status" aria-live="polite"></p><progress id="downloadProgress" aria-label="影片下載進度" max="100"></progress><button id="cancelDownload" type="button">取消下載</button></div><p class="start-footnote">教學體驗 · 照片與紀錄僅留在本次頁面，重新整理即清除</p></div>
     <footer class="start-footer"><span>觀察，從一張照片開始。</span><span>01 — 03 / PHOTO-ID</span></footer>
   </section>
 
@@ -193,6 +193,6 @@
 
 <div id="displayTools"><button id="fullscreenButton" aria-label="切換全螢幕">全螢幕</button><button id="exitImmersive" hidden aria-label="關閉橫向沉浸模式">✕ 關閉</button></div>
     <div id="mobilePrompt" role="dialog" aria-modal="true" aria-labelledby="mobileTitle" hidden><div class="mobile-card"><button id="dismissMobile" aria-label="關閉橫向提示">✕</button><span class="eyebrow">手機操作</span><h2 id="mobileTitle">把海面，轉寬一點。</h2><p>橫向可以看見更完整的畫面。開始後會嘗試全螢幕；若手機不支援，也能使用橫向操作畫面。</p><button id="enterMobile" class="big-btn">進入橫向體驗</button><button id="stayPortrait" class="text-button">先使用直向畫面</button></div></div>
-    <div id="notice" role="status" aria-live="polite"></div></div><script src="catalog.js"></script><script src="videos.js"></script><script src="app.js"></script><script src="experience.js"></script>
+    <div id="notice" role="status" aria-live="polite"></div></div><script src="catalog.js"></script><script src="videos.js"></script><script src="app.js"></script><script src="preload.js"></script><script src="experience.js"></script>
 </body>
 </html>

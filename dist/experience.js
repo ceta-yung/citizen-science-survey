@@ -113,13 +113,42 @@ document.addEventListener('focusout',scheduleLayout);
 window.addEventListener('blur',stopBurst);
 document.addEventListener('visibilitychange',()=>{if(document.hidden){stopBurst();video.pause();}});
 
-$('btnStart').onclick=()=>{
-  // 在手勢當下啟動播放，避免轉場計時器讓 iOS 丟失播放授權。
-  video.src=selectSurveyVideo();
-  video.load();
+let downloadController=null,preparedVideoURL=null,selectedVideo=null;
+function beginPreparedSurvey(){
   video.play().catch(()=>{$('videoStatus').textContent='點「播放」開始觀察。';});
   flipTo('page-shoot',()=>{lastLayout=null;layoutExperience();});
+}
+$('btnStart').onclick=async()=>{
+  if(preparedVideoURL){beginPreparedSurvey();return;}
+  if(downloadController)return;
+  const controller=new AbortController();downloadController=controller;
+  selectedVideo ||= selectSurveyVideo();
+  const button=$('btnStart'),panel=$('downloadPanel'),bar=$('downloadProgress');
+  button.disabled=true;button.textContent='正在準備影片…';panel.hidden=false;
+  $('cancelDownload').hidden=false;bar.removeAttribute('value');
+  $('downloadStatus').textContent='正在連線，完整下載後即可開始拍攝。';
+  try{
+    const blob=await downloadSurveyVideo(selectedVideo,controller.signal,(loaded,total)=>{
+      if(controller.signal.aborted)return;
+      const mb=(loaded/1048576).toFixed(1);
+      if(total){const percent=Math.min(100,Math.floor(loaded/total*100));bar.value=percent;$('downloadStatus').textContent='下載 '+percent+'% · '+mb+' / '+(total/1048576).toFixed(1)+' MB';}
+      else{bar.removeAttribute('value');$('downloadStatus').textContent='已下載 '+mb+' MB';}
+    });
+    if(controller.signal.aborted)return;
+    preparedVideoURL=URL.createObjectURL(blob);video.src=preparedVideoURL;video.load();
+    bar.value=100;$('downloadStatus').textContent='影片已完整下載，準備好就出發。';
+    button.textContent='影片已就緒，開始拍攝 ↗';$('cancelDownload').hidden=true;
+    // 再次點擊保留iPhone播放所需的使用者手勢。
+  }catch(error){
+    if(error.name==='AbortError'){panel.hidden=true;button.textContent='開始這次調查 ↗';selectedVideo=null;}
+    else{$('downloadStatus').textContent='下載未完成，請確認網路後重試。';button.textContent='重新下載影片 ↗';$('cancelDownload').hidden=true;}
+  }finally{downloadController=null;button.disabled=false;}
 };
+$('cancelDownload').onclick=()=>downloadController?.abort();
+window.addEventListener('pagehide',event=>{
+  downloadController?.abort();
+  if(!event.persisted && preparedVideoURL){video.removeAttribute('src');video.load();URL.revokeObjectURL(preparedVideoURL);preparedVideoURL=null;}
+});
 function changeZoom(f,x=mouseX,y=mouseY){
   const nz=Math.min(ZOOM_MAX,Math.max(ZOOM_MIN,zoom*f));
   panX=x-(x-panX)*nz/zoom;panY=y-(y-panY)*nz/zoom;zoom=nz;applyZoom();

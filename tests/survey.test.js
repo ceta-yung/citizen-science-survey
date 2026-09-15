@@ -118,3 +118,17 @@ test('隨機選片涵蓋全部三部且不引用舊測試影片',()=>{
  for(const file of selected)assert.ok(fs.existsSync(path.join(root,file)));
  assert.ok(!experience.includes('survey_video.mp4'));
 });
+
+test('完整預載回報進度，結束後才產生完整Blob；拒絕截短及HTTP失敗',async()=>{
+ const source=fs.readFileSync(path.join(root,'preload.js'),'utf8');
+ const progress=[];
+ const context={Blob,fetch:async()=>new Response(new Uint8Array([1,2,3,4]),{headers:{'content-length':'4'}})};
+ vm.createContext(context);vm.runInContext(source,context);
+ const blob=await context.downloadSurveyVideo('video',undefined,(a,b)=>progress.push([a,b]));
+ assert.equal(blob.size,4);assert.deepEqual([...new Uint8Array(await blob.arrayBuffer())],[1,2,3,4]);assert.deepEqual(progress.at(-1),[4,4]);
+ context.fetch=async()=>new Response(new Uint8Array([1]),{headers:{'content-length':'4'}});
+ await assert.rejects(context.downloadSurveyVideo('video',undefined,()=>{}),/不完整/);
+ context.fetch=async()=>new Response('',{status:404});await assert.rejects(context.downloadSurveyVideo('video',undefined,()=>{}),/HTTP 404/);
+ context.fetch=async(url,{signal})=>{signal.throwIfAborted();};const controller=new AbortController();controller.abort();
+ await assert.rejects(context.downloadSurveyVideo('video',controller.signal,()=>{}),{name:'AbortError'});
+});

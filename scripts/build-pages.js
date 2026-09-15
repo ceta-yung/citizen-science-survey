@@ -15,7 +15,7 @@ async function main(){
     if(hash.digest('hex')!==item.sha256)throw new Error('影片校驗值不符：'+item.file);
     const target=path.join(dest,item.file);fs.mkdirSync(path.dirname(target),{recursive:true});fs.copyFileSync(file,target);
   }
-  for(const name of ['index.html','base.css','style.css','catalog.js','videos.js','app.js','experience.js','icon.svg','manifest.webmanifest','cover.jpg'])fs.copyFileSync(path.join(src,name),path.join(dest,name));
+  for(const name of ['index.html','base.css','style.css','catalog.js','videos.js','app.js','experience.js','preload.js','icon.svg','manifest.webmanifest','cover.jpg'])fs.copyFileSync(path.join(src,name),path.join(dest,name));
   const catalogText=fs.readFileSync(path.join(src,'catalog.js'),'utf8');
   const catalog=JSON.parse(catalogText.slice(catalogText.indexOf('{'),catalogText.lastIndexOf('}')+1));
   for(const [individual,files] of Object.entries(catalog)){
